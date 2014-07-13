@@ -297,10 +297,13 @@ class SluggableListener extends MappedEventSubscriber
         {
             $config = $this->getConfiguration($om, $meta->name);
         }
+
         // search for similar slug
-        $result = $ea->getSimilarSlugs($object, $meta, $config, $preferedSlug);
-        // add similar persisted slugs into account
-        $result += $this->getSimilarPersistedSlugs($config['useObjectClass'], $preferedSlug, $config['slug']);
+        $result = array_merge(
+            (array)$ea->getSimilarSlugs($object, $meta, $config, $preferedSlug),
+            (array)$this->getSimilarPersistedSlugs($config['useObjectClass'], $preferedSlug, $config['slug'])
+        );
+
         // leave only right slugs
         if (!$recursing) {
             $this->filterSimilarSlugs($result, $config, $preferedSlug);
